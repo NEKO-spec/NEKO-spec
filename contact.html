@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>無料診断 お申し込み | WILLSORT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:   #4285F4;
+      --red:    #EA4335;
+      --yellow: #FBBC05;
+      --green:  #34A853;
+      --bg:     #f8f9fa;
+      --surface:#ffffff;
+      --text:   #202124;
+      --text2:  #5f6368;
+      --border: #dadce0;
+      --error:  #d93025;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      font-size: 20px; font-weight: 700;
+      display: flex; align-items: center; gap: 4px;
+      text-decoration: none;
+    }
+    .nav-logo span:nth-child(1){color:#4285F4}
+    .nav-logo span:nth-child(2){color:#EA4335}
+    .nav-logo span:nth-child(3){color:#FBBC05}
+    .nav-logo span:nth-child(4){color:#4285F4}
+    .nav-logo span:nth-child(5){color:#34A853}
+    .nav-logo span:nth-child(6){color:#EA4335}
+    .nav-logo span:nth-child(7){color:#FBBC05}
+    .nav-back {
+      font-size: 14px; color: var(--blue);
+      text-decoration: none; font-weight: 500;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-back:hover { text-decoration: underline; }
+
+    /* HERO */
+    .hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 24px 48px;
+      text-align: center;
+    }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #e6f4ea; color: var(--green);
+      font-size: 12px; font-weight: 600;
+      padding: 4px 14px; border-radius: 16px;
+      margin-bottom: 20px; letter-spacing: .5px;
+    }
+    .hero h1 {
+      font-size: clamp(22px, 4vw, 36px);
+      font-weight: 700; line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    .hero p { font-size: 15px; color: var(--text2); }
+
+    /* FORM AREA */
+    .form-wrap {
+      max-width: 720px;
+      margin: 48px auto 80px;
+      padding: 0 24px;
+    }
+
+    /* STEP INDICATOR */
+    .steps {
+      display: flex; align-items: center;
+      justify-content: center; gap: 0;
+      margin-bottom: 40px;
+    }
+    .step {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 6px;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 16px; left: calc(50% + 16px);
+      width: calc(100% - 12px);
+      height: 2px;
+      background: var(--border);
+      z-index: 0;
+    }
+    .step.done:not(:last-child)::after { background: var(--blue); }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      background: var(--border); color: var(--text2);
+      z-index: 1; position: relative;
+      transition: background .3s, color .3s;
+    }
+    .step.active .step-num { background: var(--blue); color: #fff; }
+    .step.done .step-num   { background: var(--green); color: #fff; }
+    .step-label { font-size: 11px; color: var(--text2); white-space: nowrap; }
+    .step.active .step-label { color: var(--blue); font-weight: 600; }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 40px 40px 32px;
+      box-shadow: 0 1px 3px rgba(60,64,67,.15), 0 4px 12px rgba(60,64,67,.08);
+      display: none;
+    }
+    .card.active { display: block; }
+    .card h2 {
+      font-size: 20px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .card .card-sub {
+      font-size: 14px; color: var(--text2);
+      margin-bottom: 32px;
+    }
+
+    /* FIELDS */
+    .field { margin-bottom: 24px; }
+    .field label {
+      display: block;
+      font-size: 13px; font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 8px;
+      letter-spacing: .3px;
+    }
+    .field label .req {
+      color: var(--red); margin-left: 3px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(66,133,244,.15);
+    }
+    .field input.error, .field select.error, .field textarea.error {
+      border-color: var(--error);
+    }
+    .field textarea { resize: vertical; min-height: 100px; }
+    .field select { appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235f6368' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+      padding-right: 36px;
+    }
+    .err-msg { font-size: 12px; color: var(--error); margin-top: 5px; display: none; }
+    .err-msg.show { display: block; }
+
+    /* RADIO / CHECKBOX GROUP */
+    .radio-group, .check-group {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .radio-group label, .check-group label {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; font-weight: 400; color: var(--text);
+      cursor: pointer; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      transition: border-color .2s, background .2s;
+    }
+    .radio-group label:hover, .check-group label:hover {
+      border-color: var(--blue); background: #f0f5ff;
+    }
+    .radio-group input, .check-group input { margin-top: 2px; flex-shrink: 0; }
+    .radio-group input:checked + span, .check-group input:checked + span {
+      font-weight: 600; color: var(--blue);
+    }
+
+    /* FIELD ROW */
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media(max-width:560px){ .field-row { grid-template-columns: 1fr; } }
+
+    /* BUTTONS */
+    .btn-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 32px; gap: 12px;
+    }
+    .btn-next, .btn-submit {
+      background: var(--blue); color: #fff;
+      font-size: 15px; font-weight: 600;
+      padding: 14px 40px; border-radius: 28px;
+      border: none; cursor: pointer;
+      transition: background .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+    .btn-next:hover, .btn-submit:hover {
+      background: #3367d6;
+      box-shadow: 0 4px 14px rgba(66,133,244,.4);
+    }
+    .btn-back {
+      background: transparent; color: var(--text2);
+      font-size: 14px; font-weight: 500;
+      padding: 12px 20px; border-radius: 28px;
+      border: 1.5px solid var(--border); cursor: pointer;
+      transition: border-color .2s; font-family: inherit;
+    }
+    .btn-back:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-submit:disabled {
+      background: var(--border); color: var(--text2);
+      cursor: not-allowed; box-shadow: none;
+    }
+    .progress-text { font-size: 12px; color: var(--text2); }
+
+    /* THANK YOU */
+    .thankyou {
+      text-align: center; padding: 60px 20px;
+      display: none;
+    }
+    .thankyou.show { display: block; }
+    .thankyou .icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: #e6f4ea; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 36px; margin: 0 auto 24px;
+    }
+    .thankyou h2 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+    .thankyou p  { font-size: 15px; color: var(--text2); line-height: 1.8; margin-bottom: 32px; }
+    .btn-top {
+      display: inline-block; background: var(--blue); color: #fff;
+      padding: 14px 40px; border-radius: 28px; text-decoration: none;
+      font-weight: 600; font-size: 15px;
+    }
+
+    /* SPINNER */
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .7s linear infinite; vertical-align: middle; margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer {
+      text-align: center; padding: 32px 24px;
+      font-size: 13px; color: var(--text2);
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span>W</span><span>I</span><span>L</span><span>L</span><span>S</span><span>O</span><span>R</span><span>T</span>
+  </a>
+  <a href="index.html" class="nav-back">← 診断ページに戻る</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-chip">✦ 完全無料・返信48時間以内</div>
+  <h1>接客力 無料診断 お申し込み</h1>
+  <p>3ステップで完了します。いただいた情報をもとに担当者から<br>診断レポートサンプルをお送りします。</p>
+</div>
+
+<div class="form-wrap">
+
+  <!-- STEP INDICATOR -->
+  <div class="steps" id="stepIndicator">
+    <div class="step active" id="si0" style="width:33%">
+      <div class="step-num">1</div>
+      <div class="step-label">基本情報</div>
+    </div>
+    <div class="step" id="si1" style="width:33%">
+      <div class="step-num">2</div>
+      <div class="step-label">課題・状況</div>
+    </div>
+    <div class="step" id="si2" style="width:33%">
+      <div class="step-num">3</div>
+      <div class="step-label">診断データ</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: 基本情報 -->
+  <div class="card active" id="step0">
+    <h2>基本情報をお聞かせください</h2>
+    <p class="card-sub">担当者からご連絡するために必要な情報です。</p>
+
+    <div class="field-row">
+      <div class="field">
+        <label>会社名・店舗名<span class="req">*</span></label>
+        <input type="text" id="company" placeholder="例：株式会社〇〇 / △△店">
+        <div class="err-msg" id="err-company">入力してください</div>
+      </div>
+      <div class="field">
+        <label>業種・部門<span class="req">*</span></label>
+        <select id="industry">
+          <option value="">選択してください</option>
+          <option>ファッション・アパレル</option>
+          <option>化粧品・美容</option>
+          <option>宝飾・時計</option>
+          <option>家具・インテリア</option>
+          <option>不動産</option>
+          <option>保険・金融</option>
+          <option>飲食</option>
+          <option>その他小売</option>
+          <option>その他サービス</option>
+        </select>
+        <div class="err-msg" id="err-industry">選択してください</div>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>お名前<span class="req">*</span></label>
+        <input type="text" id="name" placeholder="例：海藤 美也子">
+        <div class="err-msg" id="err-name">入力してください</div>
+      </div>
+      <div class="field">
+        <label>役職</label>
+        <input type="text" id="position" placeholder="例：営業部長 / 店長">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>メールアドレス<span class="req">*</span></label>
+        <input type="email" id="email" placeholder="例：info@example.co.jp">
+        <div class="err-msg" id="err-email">正しいメールアドレスを入力してください</div>
+      </div>
+      <div class="field">
+        <label>電話番号</label>
+        <input type="tel" id="phone" placeholder="例：03-0000-0000">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <span class="progress-text">1 / 3</span>
+      <button class="btn-next" onclick="goNext(0)">次へ →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: 課題・状況 -->
+  <div class="card" id="step1">
+    <h2>現在の状況・課題</h2>
+    <p class="card-sub">接客育成においてどんな課題がありますか？（複数選択可）</p>
+
+    <div class="field">
+      <label>スタッフ規模<span class="req">*</span></label>
+      <select id="staffCount">
+        <option value="">選択してください</option>
+        <option>1〜5名</option>
+        <option>6〜15名</option>
+        <option>16〜30名</option>
+        <option>31〜100名</option>
+        <option>101名以上</option>
+      </select>
+      <div class="err-msg" id="err-staffCount">選択してください</div>
+    </div>
+
+    <div class="field">
+      <label>現在お困りのこと<span class="req">*</span>（複数選択可）</label>
+      <div class="check-group" id="painCheck">
+        <label><input type="checkbox" value="ロープレをしているが売上が変わらない"><span>ロープレをしているが売上が変わらない</span></label>
+        <label><input type="checkbox" value="接客を客観的に評価できていない"><span>接客を客観的に評価できていない</span></label>
+        <label><input type="checkbox" value="育成が属人化・再現できない"><span>育成が属人化・再現できない</span></label>
+        <label><input type="checkbox" value="顧客の本音を引き出せていない"><span>顧客の本音を引き出せていない</span></label>
+        <label><input type="checkbox" value="クロスセル・再来店が伸びない"><span>クロスセル・再来店が伸びない</span></label>
+        <label><input type="checkbox" value="接客の個人差が大きい"><span>接客の個人差が大きい</span></label>
+      </div>
+      <div class="err-msg" id="err-pain">1つ以上選択してください</div>
+    </div>
+
+    <div class="field">
+      <label>現在、接客育成のために取り組んでいること</label>
+      <textarea id="currentAction" placeholder="例：週1回ロープレ実施、外部研修に年2回参加 など"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack(1)">← 戻る</button>
+      <span class="progress-text">2 / 3</span>
+      <button class="btn-next" onclick="goNext(1)">次へ →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: 診断データ -->
+  <div class="card" id="step2">
+    <h2>診断に使用するデータ</h2>
+    <p class="card-sub">診断に使用できる接客データをお教えください。</p>
+
+    <div class="field">
+      <label>接客データの種類<span class="req">*</span></label>
+      <div class="radio-group" id="dataType">
+        <label><input type="radio" name="dataType" value="動画（スマホ撮影など）"><span>動画（スマホ撮影など）</span></label>
+        <label><input type="radio" name="dataType" value="音声録音"><span>音声録音</span></label>
+        <label><input type="radio" name="dataType" value="接客の書き起こしテキスト"><span>接客の書き起こしテキスト</span></label>
+        <label><input type="radio" name="dataType" value="まだ準備できていない（一緒に考えたい）"><span>まだ準備できていない（一緒に考えたい）</span></label>
+      </div>
+      <div class="err-msg" id="err-dataType">選択してください</div>
+    </div>
+
+    <div class="field">
+      <label>診断を希望するシーン・場面</label>
+      <input type="text" id="scene" placeholder="例：新規接客の最初の10分 / クロージング場面 など">
+    </div>
+
+    <div class="field">
+      <label>その他、ご要望・ご質問</label>
+      <textarea id="message" placeholder="自由にお書きください"></textarea>
+    </div>
+
+    <div class="field">
+      <label>何でWILLSORTをお知りになりましたか？</label>
+      <select id="source">
+        <option value="">選択してください</option>
+        <option>知人・紹介</option>
+        <option>SNS（Instagram / X など）</option>
+        <option>Google検索</option>
+        <option>セミナー・イベント</option>
+        <option>その他</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack(2)">← 戻る</button>
+      <span class="progress-text">3 / 3</span>
+      <button class="btn-submit" id="submitBtn" onclick="submitForm()">送信する</button>
+    </div>
+  </div>
+
+  <!-- THANK YOU -->
+  <div class="thankyou" id="thankyou">
+    <div class="icon">✅</div>
+    <h2>お申し込みありがとうございます！</h2>
+    <p>
+      担当者より<strong>48時間以内</strong>にメールにてご連絡いたします。<br>
+      診断レポートサンプルとともに、次のステップをご案内します。<br><br>
+      ご不明な点は <a href="mailto:m.kaido@willsort.co.jp" style="color:var(--blue)">m.kaido@willsort.co.jp</a> までお気軽にご連絡ください。
+    </p>
+    <a href="index.html" class="btn-top">診断ページに戻る</a>
+  </div>
+
+</div>
+
+<footer>
+  &copy; 2026 WILLSORT All Rights Reserved.
+</footer>
+
+<script>
+  // ===== Google Apps Script の URL をここに貼り付ける =====
+  const GAS_URL = "YOUR_GAS_URL_HERE";
+  // ======================================================
+
+  let currentStep = 0;
+
+  function updateStepUI(step) {
+    document.querySelectorAll('.card').forEach((c,i) => {
+      c.classList.toggle('active', i === step);
+    });
+    document.querySelectorAll('.step').forEach((s,i) => {
+      s.classList.remove('active','done');
+      if(i < step)  s.classList.add('done');
+      if(i === step) s.classList.add('active');
+    });
+    currentStep = step;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function validate(step) {
+    let ok = true;
+    if(step === 0) {
+      ok = req('company') && reqSelect('industry') && req('name') && reqEmail('email') && ok;
+    }
+    if(step === 1) {
+      ok = reqSelect('staffCount') && reqChecks('pain', 'painCheck') && ok;
+    }
+    if(step === 2) {
+      ok = reqRadio('dataType') && ok;
+    }
+    return ok;
+  }
+
+  function req(id) {
+    const el = document.getElementById(id);
+    const err = document.getElementById('err-'+id);
+    const v = el.value.trim();
+    el.classList.toggle('error', !v);
+    err.classList.toggle('show', !v);
+    return !!v;
+  }
+  function reqSelect(id) {
+    const el = document.getElementById(id);
+    const err = document.getElementById('err-'+id);
+    const v = el.value;
+    el.classList.toggle('error', !v);
+    err.classList.toggle('show', !v);
+    return !!v;
+  }
+  function reqEmail(id) {
+    const el = document.getElementById(id);
+    const err = document.getElementById('err-'+id);
+    const v = el.value.trim();
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    el.classList.toggle('error', !ok);
+    err.classList.toggle('show', !ok);
+    return ok;
+  }
+  function reqChecks(key, groupId) {
+    const checked = document.querySelectorAll('#'+groupId+' input:checked').length > 0;
+    document.getElementById('err-'+key).classList.toggle('show', !checked);
+    return checked;
+  }
+  function reqRadio(groupId) {
+    const checked = document.querySelector('input[name="'+groupId+'"]:checked');
+    document.getElementById('err-'+groupId).classList.toggle('show', !checked);
+    return !!checked;
+  }
+
+  function goNext(from) {
+    if(validate(from)) updateStepUI(from + 1);
+  }
+  function goBack(from) {
+    updateStepUI(from - 1);
+  }
+
+  async function submitForm() {
+    if(!validate(2)) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>送信中…';
+
+    const pains = [...document.querySelectorAll('#painCheck input:checked')].map(c => c.value).join('、');
+    const dataTypeEl = document.querySelector('input[name="dataType"]:checked');
+
+    const data = {
+      会社名: document.getElementById('company').value,
+      業種: document.getElementById('industry').value,
+      氏名: document.getElementById('name').value,
+      役職: document.getElementById('position').value,
+      メール: document.getElementById('email').value,
+      電話: document.getElementById('phone').value,
+      スタッフ規模: document.getElementById('staffCount').value,
+      課題: pains,
+      現在の取り組み: document.getElementById('currentAction').value,
+      データ種類: dataTypeEl ? dataTypeEl.value : '',
+      診断シーン: document.getElementById('scene').value,
+      ご要望: document.getElementById('message').value,
+      流入経路: document.getElementById('source').value,
+      申込日時: new Date().toLocaleString('ja-JP')
+    };
+
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+    } catch(e) {
+      console.error(e);
+    }
+
+    // GAS_URL未設定でもThank youを表示（テスト用）
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('stepIndicator').style.display = 'none';
+    const ty = document.getElementById('thankyou');
+    ty.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
