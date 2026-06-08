@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>接客力診断 | WILLSORT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:   #4285F4;
+      --red:    #EA4335;
+      --yellow: #FBBC05;
+      --green:  #34A853;
+      --bg:     #f8f9fa;
+      --surface:#ffffff;
+      --text:   #202124;
+      --text2:  #5f6368;
+      --border: #dadce0;
+      --shadow: 0 1px 3px rgba(60,64,67,.15), 0 2px 8px rgba(60,64,67,.10);
+      --shadow-hover: 0 4px 12px rgba(60,64,67,.20), 0 8px 24px rgba(60,64,67,.12);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Noto Sans JP', 'Google Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-logo span:nth-child(1) { color: var(--blue); }
+    .nav-logo span:nth-child(2) { color: var(--red); }
+    .nav-logo span:nth-child(3) { color: var(--yellow); }
+    .nav-logo span:nth-child(4) { color: var(--blue); }
+    .nav-logo span:nth-child(5) { color: var(--green); }
+    .nav-logo span:nth-child(6) { color: var(--red); }
+    .nav-logo span:nth-child(7) { color: var(--yellow); }
+    .nav-cta {
+      background: var(--blue);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 24px;
+      border-radius: 24px;
+      text-decoration: none;
+      transition: box-shadow .2s, background .2s;
+    }
+    .nav-cta:hover { background: #3367d6; box-shadow: 0 2px 8px rgba(66,133,244,.4); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--surface);
+      padding: 96px 24px 80px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f0fe;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 14px;
+      border-radius: 16px;
+      margin-bottom: 28px;
+      letter-spacing: .5px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text);
+      margin-bottom: 20px;
+      letter-spacing: -.5px;
+    }
+    .hero h1 em { font-style: normal; color: var(--blue); }
+    .hero p {
+      font-size: 18px;
+      color: var(--text2);
+      max-width: 580px;
+      margin: 0 auto 40px;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 36px;
+      border-radius: 28px;
+      text-decoration: none;
+      transition: box-shadow .2s, background .2s;
+      letter-spacing: .3px;
+    }
+    .btn-primary:hover { background: #3367d6; box-shadow: 0 4px 16px rgba(66,133,244,.45); }
+    .btn-outline {
+      background: transparent;
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 13px 36px;
+      border-radius: 28px;
+      border: 1.5px solid var(--blue);
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-outline:hover { background: #e8f0fe; }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 80px 24px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: clamp(24px, 3.5vw, 34px);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: -.3px;
+    }
+    .section-sub {
+      font-size: 16px;
+      color: var(--text2);
+      margin-bottom: 48px;
+    }
+
+    /* ── PAIN ── */
+    .pain { background: var(--bg); }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(256px, 1fr));
+      gap: 16px;
+    }
+    .pain-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid transparent;
+      transition: box-shadow .2s, border-color .2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .pain-card:hover { box-shadow: var(--shadow-hover); border-left-color: var(--blue); }
+    .pain-card:nth-child(2) { border-left-color: transparent; }
+    .pain-num {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #e8f0fe;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    .pain-card p { font-size: 14px; line-height: 1.7; color: var(--text); }
+
+    /* ── SCORE ── */
+    .score-section { background: var(--surface); }
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .score-card {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 20px 20px 16px;
+      border: 1px solid var(--border);
+    }
+    .score-card .axis { font-size: 12px; color: var(--text2); font-weight: 500; margin-bottom: 10px; }
+    .bar-bg { background: #dadce0; border-radius: 4px; height: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; }
+    .bar-blue   { background: var(--blue); }
+    .bar-green  { background: var(--green); }
+    .bar-yellow { background: var(--yellow); }
+    .bar-red    { background: var(--red); }
+    .score-num { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 8px; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; border-radius: 12px; box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 14px; }
+    thead th {
+      background: #f1f3f4;
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-align: left;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td { padding: 14px 18px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f8f9fa; }
+    .chip {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .chip-good { background: #e6f4ea; color: #137333; }
+    .chip-imp  { background: #fce8e6; color: #c5221f; }
+
+    /* ── META PROGRAM ── */
+    .meta { background: var(--bg); }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(256px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .meta-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s;
+    }
+    .meta-card:hover { box-shadow: var(--shadow-hover); }
+    .meta-card .mp-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
+    .meta-card .mp-type {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .meta-card .mp-color-1 { color: var(--blue); }
+    .meta-card .mp-color-2 { color: var(--red); }
+    .meta-card .mp-color-3 { color: var(--green); }
+    .meta-card .mp-color-4 { color: #ff6d00; }
+    .meta-card .mp-color-5 { color: #6200ea; }
+    .meta-card .mp-color-6 { color: #00838f; }
+    .meta-card p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+    .insight-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+      border-top: 4px solid var(--blue);
+    }
+    .insight-card h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+    .insight-row {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .insight-row .label-bad  { color: var(--red);   font-weight: 700; white-space: nowrap; }
+    .insight-row .label-good { color: var(--green); font-weight: 700; white-space: nowrap; }
+    .insight-row p { color: var(--text2); line-height: 1.65; }
+
+    /* ── FEATURES ── */
+    .features { background: var(--surface); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .feature-card {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 28px 24px;
+      border: 1px solid var(--border);
+      transition: box-shadow .2s, background .2s;
+    }
+    .feature-card:hover { background: var(--surface); box-shadow: var(--shadow-hover); }
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .ic-blue   { background: #e8f0fe; }
+    .ic-green  { background: #e6f4ea; }
+    .ic-yellow { background: #fef7e0; }
+    .ic-red    { background: #fce8e6; }
+    .feature-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p  { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--blue);
+      padding: 96px 24px;
+      text-align: center;
+    }
+    .cta-section h2 { color: #fff; margin-bottom: 14px; }
+    .cta-section p  { color: rgba(255,255,255,.8); font-size: 16px; margin-bottom: 40px; }
+    .btn-white {
+      background: #fff;
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 16px 48px;
+      border-radius: 28px;
+      text-decoration: none;
+      display: inline-block;
+      transition: box-shadow .2s;
+    }
+    .btn-white:hover { box-shadow: 0 4px 20px rgba(0,0,0,.25); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    @media (max-width:600px) {
+      nav { padding: 0 16px; }
+      .nav-logo { font-size: 17px; }
+      section { padding: 56px 16px; }
+      .hero { padding: 72px 16px 60px; }
+      .insight-row { flex-direction: column; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span>W</span><span>I</span><span>L</span><span>L</span><span>S</span><span>O</span><span>R</span><span>T</span>
+  </div>
+  <a href="#contact" class="nav-cta">無料診断を申し込む</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-chip">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Sales Consulting Tool by WILLSORT
+    </div>
+    <h1>あなたの店舗の接客力、<br><em>客観的に診断</em>できていますか？</h1>
+    <p>実際の接客シーンをテキスト化し、会話分析 × NLPメタプログラム診断で<br>売上に直結する改善ポイントを可視化します。</p>
+    <div class="hero-actions">
+      <a href="#sample" class="btn-primary">診断サンプルを見る</a>
+      <a href="#contact" class="btn-outline">無料で申し込む</a>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="container">
+    <div class="section-eyebrow">Challenge</div>
+    <h2>こんなお悩み、ありませんか？</h2>
+    <div class="section-sub">多くの店舗が「感覚」と「経験」に頼った接客育成を続けています。</div>
+    <div class="pain-grid">
+      <div class="pain-card"><div class="pain-num">1</div><p>ロープレを実施しているのに<br>売上が変わらない</p></div>
+      <div class="pain-card"><div class="pain-num">2</div><p>スタッフの接客をどう<br>評価すればいいかわからない</p></div>
+      <div class="pain-card"><div class="pain-num">3</div><p>「感覚」頼りで<br>再現性のある育成ができない</p></div>
+      <div class="pain-card"><div class="pain-num">4</div><p>顧客の本音を引き出せず<br>機会損失が続いている</p></div>
+      <div class="pain-card"><div class="pain-num">5</div><p>お客様のタイプ別に<br>接客を変える方法がわからない</p></div>
+      <div class="pain-card"><div class="pain-num">6</div><p>クロスセル・再来店促進が<br>属人化してしまっている</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE DIAGNOSIS -->
+<section class="score-section" id="sample">
+  <div class="container">
+    <div class="section-eyebrow">Sample Report</div>
+    <h2>診断レポートサンプル</h2>
+    <div class="section-sub">ファッション部門 接客ロープレ（8分）の実際の分析結果です。</div>
+
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="axis">ヒアリング力</div>
+        <div class="bar-bg"><div class="bar-fill bar-blue" style="width:80%"></div></div>
+        <div class="score-num">4 <span style="font-size:13px;color:var(--text2);font-weight:400;">/ 5</span></div>
+      </div>
+      <div class="score-card">
+        <div class="axis">提案の的確さ</div>
+        <div class="bar-bg"><div class="bar-fill bar-blue" style="width:80%"></div></div>
+        <div class="score-num">4 <span style="font-size:13px;color:var(--text2);font-weight:400;">/ 5</span></div>
+      </div>
+      <div class="score-card">
+        <div class="axis">懸念点処理</div>
+        <div class="bar-bg"><div class="bar-fill bar-green" style="width:100%"></div></div>
+        <div class="score-num">5 <span style="font-size:13px;color:var(--text2);font-weight:400;">/ 5</span></div>
+      </div>
+      <div class="score-card">
+        <div class="axis">クロージング</div>
+        <div class="bar-bg"><div class="bar-fill bar-yellow" style="width:60%"></div></div>
+        <div class="score-num">3 <span style="font-size:13px;color:var(--text2);font-weight:400;">/ 5</span></div>
+      </div>
+      <div class="score-card">
+        <div class="axis">メタプログラム活用</div>
+        <div class="bar-bg"><div class="bar-fill bar-yellow" style="width:60%"></div></div>
+        <div class="score-num">3 <span style="font-size:13px;color:var(--text2);font-weight:400;">/ 5</span></div>
+      </div>
+      <div class="score-card">
+        <div class="axis">再来店促進</div>
+        <div class="bar-bg"><div class="bar-fill bar-red" style="width:60%"></div></div>
+        <div class="score-num">3 <span style="font-size:13px;color:var(--text2);font-weight:400;">/ 5</span></div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:90px">区分</th>
+            <th>発見事項</th>
+            <th>接客上の影響</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="chip chip-good">良い点</span></td>
+            <td>第一声が押し付けがましくなく、顧客に余白を作った</td>
+            <td>自然な接点が生まれ、顧客が自ら商品に触れるきっかけを作った</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-good">良い点</span></td>
+            <td>「白い肌×黒髪」という具体的根拠つきで似合わせを提案</td>
+            <td>外部参照型の顧客に刺さる「専門家の判断」として機能した</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-good">良い点</span></td>
+            <td>ブランドのこだわり（首元ライン・袖アクセント）を情感を込めて説明</td>
+            <td>「シンプルすぎ」という懸念を解消し、価値を再定義できた</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-good">良い点</span></td>
+            <td>「グリーンがハワイアンダイニングで映える」と未来シーンを言語化</td>
+            <td>購入後のポジティブなイメージが購買確信を高めた</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-imp">改善点</span></td>
+            <td>予算確認が最後まで行われなかった</td>
+            <td>価格帯のミスマッチリスクと、上位提案の機会損失が生じた</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-imp">改善点</span></td>
+            <td>女子会の会場・雰囲気を早期に聞けなかった</td>
+            <td>最適提案が後半まで遅れた</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-imp">改善点</span></td>
+            <td>ボトムス・アクセサリーのクロスセル提案なし</td>
+            <td>客単価アップの機会を逃した</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-imp">改善点</span></td>
+            <td>次回来店につながるフォローアップがなかった</td>
+            <td>良好な関係を再来店の仕組みに変換できなかった</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- META PROGRAM -->
+<section class="meta">
+  <div class="container">
+    <div class="section-eyebrow">NLP Meta-Program Analysis</div>
+    <h2>メタプログラム診断</h2>
+    <div class="section-sub">顧客の思考・行動パターンを6軸で読み解き、タイプ別の最適接客フレーズを設計します。</div>
+
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="mp-eyebrow">動機方向</div>
+        <div class="mp-type mp-color-1">アウェイ型（回避）</div>
+        <p>「地味な感じから抜け出したい」という逃げる動機が購買トリガー。現状の不満を言語化する接客が有効。</p>
+      </div>
+      <div class="meta-card">
+        <div class="mp-eyebrow">判断基準</div>
+        <div class="mp-type mp-color-2">外部参照型</div>
+        <p>「似合うかわからない」と他者の評価・専門家の意見を求める。断言＋根拠で背中を押す接客が有効。</p>
+      </div>
+      <div class="meta-card">
+        <div class="mp-eyebrow">情報処理</div>
+        <div class="mp-type mp-color-3">オプション型</div>
+        <p>「どっちも見たい」「色々合わせられる？」と可能性を探る。選択肢を見せてから絞り込む構成が有効。</p>
+      </div>
+      <div class="meta-card">
+        <div class="mp-eyebrow">ソーティング</div>
+        <div class="mp-type mp-color-4">他者志向型</div>
+        <p>友達・女子会という他者基準が購買動機の核。「友達にどう見られたいか」の問いかけが有効。</p>
+      </div>
+      <div class="meta-card">
+        <div class="mp-eyebrow">チャンクサイズ</div>
+        <div class="mp-type mp-color-5">スモールチャンク</div>
+        <p>「タイトでは？」「シンプルすぎ？」と細部の懸念が次々出る。先回りして潰す説明設計が有効。</p>
+      </div>
+      <div class="meta-card">
+        <div class="mp-eyebrow">時間軸</div>
+        <div class="mp-type mp-color-6">現在〜近未来型</div>
+        <p>「今週末」という具体的期限が行動を加速させた。期限・シーンの具体化でクロージングを早められる。</p>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <h3>この顧客への最強フレーズ設計</h3>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px;">
+        この顧客は <strong style="color:var(--text)">「外部参照型 × アウェイ型 × 他者志向型」</strong> の組み合わせ。<br>
+        「自分ではわからないから正解を教えてほしい、地味な自分から脱して友達に認められたい」が動機の核です。
+      </p>
+      <div class="insight-row">
+        <span class="label-bad">❌ 弱い</span>
+        <p>「似合いますよ」「大丈夫ですよ」— 根拠のない漠然とした安心は外部参照型に刺さらない</p>
+      </div>
+      <div class="insight-row">
+        <span class="label-good">✅ 強い</span>
+        <p>「カラー診断的にはあなたはこのタイプで、<strong>これが正解です</strong>」— 断言＋専門的根拠</p>
+      </div>
+      <div class="insight-row">
+        <span class="label-good">✅ 強い</span>
+        <p>「10年ぶりに会う友達に、どんな自分として見てもらいたいですか？」— トゥワード言語への変換</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <div class="section-eyebrow">What You Get</div>
+    <h2>診断でわかること</h2>
+    <div class="section-sub">「なんとなく良かった」を、再現できる仕組みに変えます。</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon ic-blue">🎙</div>
+        <h3>会話の構造分析</h3>
+        <p>発言量・質問数・応答パターンを可視化。会話の主導権を数値で把握します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon ic-yellow">🧠</div>
+        <h3>メタプログラム診断</h3>
+        <p>顧客の動機方向・判断基準・情報処理スタイルを6軸で分析。タイプ別フレーズを設計します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon ic-green">✅</div>
+        <h3>良い点・改善点の特定</h3>
+        <p>何がなぜ機能したのか・しなかったのかを接客プロセスに紐づけて解説します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon ic-blue">💬</div>
+        <h3>改善フレーズの提案</h3>
+        <p>「この場面でこう言い換える」という具体的スクリプト例を明日から使えるレベルで提供します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon ic-red">📈</div>
+        <h3>機会損失の数値化</h3>
+        <p>クロスセル・再来店促進の未実施箇所を特定し、売上インパクトを試算します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon ic-green">🔄</div>
+        <h3>育成への落とし込み</h3>
+        <p>診断結果をロープレ教材・チェックシートに変換。再現性のある育成の仕組みを構築します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <h2>まず、無料で1件診断してみませんか？</h2>
+    <p>既存のロープレ動画や接客録音をお送りいただくだけで<br>診断レポートサンプルを無料でお返しします。</p>
+    <a href="mailto:info@willsort.jp" class="btn-white">無料診断を申し込む</a>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 WILLSORT All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
